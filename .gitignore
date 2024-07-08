@@ -1,0 +1,26 @@
+# Ignore SQLite database file
+db.sqlite3
+
+# Ignore environment files
+.env
+.env.*
+
+# Ignore node modules
+*/node_modules/
+
+# Ignore static files (if generated)
+static/
+
+# Ignore build/production files
+dist/
+build/
+
+# Ignore logs
+*.log
+
+# Ignore local configuration files
+*.local
+*.local.*
+
+# Ignore Python cache files
+**/__pycache__/
