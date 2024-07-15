@@ -1,17 +1,21 @@
-import React, { Component } from "react";
-import { render } from "react-dom";
+import React from "react";
+import HomePage from "./HomePage";
+import QuizPage from "./QuizPage";
+import ProfilePage from "./ProfilePage";
+import { 
+  BrowserRouter as Router, 
+  Routes,
+  Route,
+} from "react-router-dom";
 
-export default class App extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-        <h1>Testing React Code</h1>
-    );
-  }
+export default function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path ='/' element={<HomePage />}></Route>
+        <Route path='/quiz' element={<QuizPage />}></Route>
+        <Route path='/profile' element={<ProfilePage name="Dave"/>}></Route>
+      </Routes>
+    </Router>
+  );
 }
-
-const appDiv = document.getElementById("app");
-render(<App />, appDiv);
