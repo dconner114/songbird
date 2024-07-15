@@ -1,7 +1,6 @@
 import React from "react";
+import QuizForm from "./forms/QuizForm";
 
 export default function QuizPage() {
-  return (
-    <h1>Here are a bunch of quizzes</h1>
-  );
+  return <QuizForm />;
 }
