@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import BirdView
+from . import views
 
 urlpatterns = [
-    path('birds/', BirdView.as_view())
+    path('birds/', views.BirdView.as_view(), name='bird-list'),
+    path('orders/', views.order_list, name='order-list'),
 ]
