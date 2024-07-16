@@ -1,11 +1,27 @@
 from django.db import models
 
-# Create your models here.
+class Order(models.Model):
+    scientific_name = models.CharField(max_length=50, unique=True)
+    common_name = models.CharField(max_length=50, unique=True)
+    
+    def __str__(self):
+        return self.common_name
+
+
+class Family(models.Model):
+    scientific_name = models.CharField(max_length=50, unique=True)
+    common_name = models.CharField(max_length=50, unique=True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.common_name
+    
+
 class Bird(models.Model):
     common_name = models.CharField(max_length=50, unique=True)
     scientific_name = models.CharField(max_length=100, unique=True)
-    order = models.CharField(max_length=50)
-    family = models.CharField(max_length=50)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    family = models.ForeignKey(Family, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     
     conservation_levels = {
