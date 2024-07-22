@@ -1,7 +1,8 @@
 from django.urls import path, re_path
 from django.views.generic import TemplateView
-from .views import index
+from django.contrib.auth.decorators import login_required
+from . import views
 
 urlpatterns = [
-    re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
+    path('', login_required(views.index), name='dashboard'),
 ]

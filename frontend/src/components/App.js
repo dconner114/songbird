@@ -41,7 +41,6 @@ export default function App() {
         )}
         {selectedTab === 2 && (
           <>
-            <Typography variant="h3">Profile</Typography>
             <ProfilePage />
           </>
         )}

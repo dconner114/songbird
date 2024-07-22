@@ -4,7 +4,7 @@ from .models import User, Order, Bird
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["username", "email", "password"]
+        fields = ["username", "email", "quizzes_taken"]
 
 class BirdSerializer(serializers.ModelSerializer):
     class Meta:
