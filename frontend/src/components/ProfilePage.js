@@ -3,7 +3,10 @@ import axios from 'axios';
 import { useEffect, useState } from "react";
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
+import Button from '@mui/material/Button';
 
+
+// Change this to use App component info
 export default function ProfilePage(props) {
 
   const [user, setUser] = useState(null);
@@ -19,6 +22,10 @@ export default function ProfilePage(props) {
     fetchUser();
   }, []);
 
+  const handleLogout = () => {
+    axios.post('/api/logout/');
+  };
+
   if (!user) {
     <CircularProgress />
   } else {
@@ -27,6 +34,7 @@ export default function ProfilePage(props) {
         <Typography variant="h6">{user.username}'s Profile</Typography>
         <Typography variant="subtitle1">Quizzes Taken: {user.quizzes_taken}</Typography>
         <Typography variant="subtitle1">Your email: {user.email}</Typography>
+        <Button onClick={props.logout}>Logout</Button>
       </>
     );
   }

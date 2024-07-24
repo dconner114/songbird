@@ -2,19 +2,9 @@
 {% load static %}
 
 {% block body %}
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% endif %}" role="alert">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
-
     <div id="main">
         <div id="app"></div>
     </div>
 
-    <script src="{% static "frontend/main.js" %}">
-        const csrftoken = "{{ csrf_token }}";
-    </script>
+    <script src="{% static "frontend/main.js" %}"></script>
 {% endblock %}

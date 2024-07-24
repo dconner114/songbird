@@ -1,43 +1,82 @@
+import json
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import render, redirect
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework import generics
 from .serializers import BirdSerializer, UserSerializer, OrderSerializer
-from .models import Bird, Order
+from .models import User, Bird, Order
 
+@require_POST
 def LoginView(request):
-    if request.method == "POST":
+    data = json.loads(request.body)
+    username = data.get('username')
+    password = data.get('password')
 
-        # Attempt to sign user in
-        username = request.POST["username"]
-        password = request.POST["password"]
-        user = authenticate(request, username=username, password=password)
+    if username is None or password is None:
+        return JsonResponse({'detail': 'Please provide username and password.'}, status=400)
 
-        # Check if authentication successful
-        if user is not None:
-            login(request, user)
-            return render(request, "frontend/index.html", {
-                "message": "Successfully logged in."
-            })
-        else:
-            return render(request, "frontend/login.html", {
-                "message": "Invalid username and/or password."
-            })
-    return render(request, "frontend/login.html")
+    user = authenticate(username=username, password=password)
 
+    if user is None:
+        return JsonResponse({'detail': 'Invalid credentials.'}, status=400)
+
+    login(request, user)
+    return JsonResponse({'detail': 'Successfully logged in.'})
+
+
+@require_POST
 def RegisterView(request):
-    if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
-        email = request.POST["email"]
-        user = User.objects.create_user(username, email, password)
+    data = json.loads(request.body)
+    username = data.get('username')
+    email = data.get('email')
+    password = data.get('password')
+
+    try:
+        # Check if user with the provided username already exists
+        if User.objects.filter(username=username).exists():
+            return JsonResponse({'detail': 'Username already taken.'}, status=400)
+        elif User.objects.filter(email=email).exists():
+            return JsonResponse({'detail': 'Email already taken.'}, status=400)
+        
+        # Create a new user
+        user = User.objects.create_user(username=username, email=email, password=password)
+
+        # Automatically log in the user after registration
         login(request, user)
-        return redirect("index")
-    else:
-        return render(request, "frontend/register.html")    
+
+        return JsonResponse({'detail': 'Successfully registered.'})
+    
+    except Exception as e:
+        print(e)  # Log the error for debugging purposes
+        return HttpResponseBadRequest('Registration failed. Please try again later.')
+
+
+def LogoutView(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'detail': 'You\'re not logged in.'}, status=400)
+
+    logout(request)
+    return JsonResponse({'detail': 'Successfully logged out.'})
+
+
+@ensure_csrf_cookie
+def SessionView(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'isAuthenticated': False})
+
+    return JsonResponse({'isAuthenticated': True})
+
+
+def WhoamiView(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'isAuthenticated': False})
+
+    return JsonResponse({'username': request.user.username})
 
 class BirdView(generics.CreateAPIView):
     queryset = Bird.objects.all()
