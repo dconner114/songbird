@@ -34,7 +34,6 @@ class App extends React.Component {
     })
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
       if (data.isAuthenticated) {
         this.setState({ isAuthenticated: true });
       } else {
@@ -142,18 +141,18 @@ class App extends React.Component {
         </>)}
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
+      <>
         <Tabs
-          orientation="vertical"
-          variant="scrollable"
+          orientation="horizontal"
           value={selectedTab}
           onChange={this.handleTabChange}
+          centered
         >
           <Tab label="Home" />
           <Tab label="Learn" />
           <Tab label="Profile" />
         </Tabs>
-        <div style={{ marginLeft: '20px' }}>
+        <div align="center">
           {selectedTab === 0 && (
             <>
               <Typography variant="h3">Home</Typography>
@@ -162,15 +161,14 @@ class App extends React.Component {
           )}
           {selectedTab === 1 && (
             <>
-              <Typography variant="h3">Learn</Typography>
-              <QuizPage />
+              <QuizPage token={cookies.get("csrftoken")}/>
             </>
           )}
           {selectedTab === 2 && (
             <ProfilePage logout={this.logout} />
           )}
         </div>
-      </div>
+      </>
     );
   }
 }

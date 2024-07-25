@@ -7,7 +7,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-export default function OrderSelect() {
+export default function OrderSelect({ onOrderChange }) {
   const [orderOptions, setOrderOptions] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState('');
 
@@ -24,8 +24,11 @@ export default function OrderSelect() {
     fetchOrderOptions();
   }, []); // only run once on component mount
 
+
   const handleChange = (event) => {
-    setSelectedOrder(event.target.value);
+    const order = event.target.value;
+    setSelectedOrder(order);
+    onOrderChange(order);
   };
 
   return (

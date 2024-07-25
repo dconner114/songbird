@@ -9,4 +9,6 @@ urlpatterns = [
     path('whoami/', views.WhoamiView, name='whoami'),
     path('orders/', views.order_list, name='order-list'),
     path('user-info/', views.user_info, name='user-info'),
+    path('get-questions/', views.get_questions, name='get-questions'),
+    path('submit-quiz/', views.submit_quiz, name='submit-quiz'),
 ]
