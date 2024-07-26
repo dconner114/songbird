@@ -139,7 +139,6 @@ def submit_quiz(request):
         data = json.loads(request.body)
         correct_answers = data.get('correctAnswers')
         choices = data.get('choices')
-        print(correct_answers, choices)
     except json.JSONDecodeError:
         return JsonResponse({'detail': 'Invalid JSON.'}, status=400)
     except ValueError:
@@ -148,11 +147,31 @@ def submit_quiz(request):
     if len(correct_answers) != len(choices):
         return JsonResponse({'detail': 'Number of correct answers and choices must match.'}, status=400)
 
-    for correct_answer, choice in zip(correct_answers, choices):
-        if correct_answer != int(choice):
-            return JsonResponse({'detail': 'Incorrect answer.'}, status=400)
+    results = []
 
-    return JsonResponse({'detail': 'Correct answer.'})
+    for correct_answer, choice in zip(correct_answers, choices):
+        correct_bird = Bird.objects.get(id=correct_answer)
+        answer_bird = Bird.objects.get(id=choice)
+        isCorrect = True
+        if int(correct_answer) != int(choice):
+            print('wrong answer')
+            isCorrect = False
+        
+        results.append({
+            'correct_bird': {
+                'id': correct_bird.id,
+                'common_name': correct_bird.common_name,
+                'scientific_name': correct_bird.scientific_name,
+            },
+            'answer_bird': {
+                'id': answer_bird.id,
+                'common_name': answer_bird.common_name,
+                'scientific_name': answer_bird.scientific_name,
+            },
+            'isCorrect': isCorrect
+        })
+
+    return JsonResponse({'results': results})
 
 @api_view(['GET'])
 def order_list(request):

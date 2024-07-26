@@ -37,7 +37,7 @@ export default function Question({ question, index, handleChoiceChange}) {
                             control={<Radio />} 
                             key={index} 
                             label={choice.common_name}
-                            value={choice.id}/>
+                            value={parseInt(choice.id)}/>
                         ))}
                     </RadioGroup>
                 </CardContent>

@@ -8,6 +8,7 @@ import { useState } from "react";
 export default function QuizPage(props) {
   const [quizState, setQuizState] = useState("FORM"); // Use "FORM" or "QUESTIONS" or "RESULTS"
   const [questions, setQuestions] = useState([]);
+  const [results, setResults] = useState([]);
   const [error, setError] = useState(null);
 
   const handleQuizStart = async (formData) => {
@@ -55,6 +56,7 @@ export default function QuizPage(props) {
       }
 
       const data = await response.json();
+      setResults(data.results);
       setQuizState("RESULTS");
     } catch (error) {
       setError(error.message);
@@ -73,7 +75,7 @@ export default function QuizPage(props) {
       case "QUESTIONS":
         return <QuizQuestions onQuizSubmit={handleQuizSubmit} questions={questions} />;
       case "RESULTS":
-        return <QuizResults onReturn={handleReturn} />;
+        return <QuizResults onReturn={handleReturn} results={results} />;
       default:
         return null;
     }
