@@ -7,6 +7,8 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 export default function Question({ question, index, handleChoiceChange}) {
 
     const [ choice, setChoice ] = useState(null);
@@ -25,9 +27,10 @@ export default function Question({ question, index, handleChoiceChange}) {
                     <Typography variant="h6" color="grey">
                         Question {index + 1}
                     </Typography>
-                    <Typography variant="h4">
-                        {question.correct_answer.common_name}
-                    </Typography>
+                    {question.correct_answer.photo ? 
+                        <img src={question.correct_answer.photo} alt="Bird photo" style={{width: '100%', height: 'auto'}} /> 
+                        : question.correct_answer.common_name}
+
                     <RadioGroup
                         value={choice}
                         onChange={handleChange}

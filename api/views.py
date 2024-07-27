@@ -10,7 +10,7 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework import generics
 from .serializers import BirdSerializer, UserSerializer, OrderSerializer
-from .models import User, Bird, Order
+from .models import User, Bird, Order, BirdPhoto
 
 @require_POST
 def LoginView(request):
@@ -114,10 +114,15 @@ def get_questions(request):
     random.shuffle(bird_list)
 
     for bird in bird_list[:int(num_questions)]:
+        
+        # find random photo of bird
+        image = BirdPhoto.objects.filter(bird=bird).order_by('?').first()
+        
         correct_answer = {
             'id': bird.id,
             'common_name': bird.common_name,
             'scientific_name': bird.scientific_name,
+            'photo': image.photo.url if image else None
         }
         
         wrong_answers = list(Bird.objects.exclude(id=bird.id).order_by('?')[:3])

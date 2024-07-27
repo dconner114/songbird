@@ -11,7 +11,6 @@ class Order(models.Model):
     def __str__(self):
         return self.common_name
 
-
 class Family(models.Model):
     scientific_name = models.CharField(max_length=50, unique=True)
     common_name = models.CharField(max_length=50, unique=True)
@@ -19,7 +18,6 @@ class Family(models.Model):
     
     def __str__(self):
         return self.common_name
-    
 
 class Bird(models.Model):
     common_name = models.CharField(max_length=50, unique=True)
@@ -40,5 +38,31 @@ class Bird(models.Model):
     conservation = models.CharField(max_length=2, choices=conservation_levels.items())
     
     def __str__(self):
-        return self.common_name
+        return self.common_name + " (" + self.scientific_name + ")"
 
+class BirdPhoto(models.Model):
+    bird = models.ForeignKey(Bird, on_delete=models.CASCADE)
+    photo = models.ImageField(upload_to="birds")
+    url = models.URLField(max_length=200)
+    photographer = models.CharField(max_length=50)
+    source = models.CharField(max_length=50)
+    isPrimary = models.BooleanField(default=False)
+
+    LICENSE_CHOICES = {
+        "Pexels": "Pexels License",
+    }
+
+    license = models.CharField(max_length=50, choices=LICENSE_CHOICES)
+
+    # Ensures that only one photo is marked as primary
+    def save(self, *args, **kwargs):
+        if self.isPrimary:
+            # Unset the primary flag for all other photos of this bird
+            BirdPhoto.objects.filter(bird=self.bird, isPrimary=True).update(isPrimary=False)
+        super(BirdPhoto, self).save(*args, **kwargs)
+
+    def author_string(self):
+        return "Photo by " + self.photographer + " from " + self.source
+
+    def __str__(self):
+        return "Photo of " + self.bird.common_name + " by " + self.photographer
