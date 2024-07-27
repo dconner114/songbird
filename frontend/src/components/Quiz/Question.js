@@ -28,8 +28,15 @@ export default function Question({ question, index, handleChoiceChange}) {
                         Question {index + 1}
                     </Typography>
                     {question.correct_answer.photo ? 
-                        <img src={question.correct_answer.photo} alt="Bird photo" style={{width: '100%', height: 'auto'}} /> 
-                        : question.correct_answer.common_name}
+                    (<>
+                        <img src={question.correct_answer.photo} alt="Bird photo" style={{width: '100%', height: 'auto'}} />
+                        <Typography variant="caption" color="grey">{question.correct_answer.photo_credit}</Typography>
+                    </>
+                    ) : (
+                        <Typography variant="subtitle1">
+                            No photo available
+                        </Typography>
+                    ) }
 
                     <RadioGroup
                         value={choice}

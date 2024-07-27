@@ -122,7 +122,8 @@ def get_questions(request):
             'id': bird.id,
             'common_name': bird.common_name,
             'scientific_name': bird.scientific_name,
-            'photo': image.photo.url if image else None
+            'photo': image.photo.url if image else None,
+            'photo_credit': image.author_string() if image else None
         }
         
         wrong_answers = list(Bird.objects.exclude(id=bird.id).order_by('?')[:3])
@@ -176,6 +177,11 @@ def submit_quiz(request):
             'isCorrect': isCorrect
         })
 
+    # Update the user's quiz count
+    user = request.user
+    user.quizzes_taken += 1
+    user.save()
+    
     return JsonResponse({'results': results})
 
 @api_view(['GET'])

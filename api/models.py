@@ -9,7 +9,7 @@ class Order(models.Model):
     common_name = models.CharField(max_length=50, unique=True)
     
     def __str__(self):
-        return self.common_name
+        return self.common_name + " (" + self.scientific_name + ")"
 
 class Family(models.Model):
     scientific_name = models.CharField(max_length=50, unique=True)
@@ -17,7 +17,7 @@ class Family(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     
     def __str__(self):
-        return self.common_name
+        return self.common_name + " (" + self.scientific_name + ")"
 
 class Bird(models.Model):
     common_name = models.CharField(max_length=50, unique=True)
@@ -42,7 +42,7 @@ class Bird(models.Model):
 
 class BirdPhoto(models.Model):
     bird = models.ForeignKey(Bird, on_delete=models.CASCADE)
-    photo = models.ImageField(upload_to="birds")
+    photo = models.ImageField(upload_to="bird-images/")
     url = models.URLField(max_length=200)
     photographer = models.CharField(max_length=50)
     source = models.CharField(max_length=50)
@@ -50,6 +50,7 @@ class BirdPhoto(models.Model):
 
     LICENSE_CHOICES = {
         "Pexels": "Pexels License",
+        "CC0": "CC0 License",
     }
 
     license = models.CharField(max_length=50, choices=LICENSE_CHOICES)
