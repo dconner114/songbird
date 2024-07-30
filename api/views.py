@@ -3,14 +3,16 @@ import random
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.db.models import Exists, OuterRef
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework import generics
-from .serializers import BirdSerializer, UserSerializer, OrderSerializer
-from .models import User, Bird, Order, BirdPhoto
+from rest_framework.response import Response
+from .serializers import BirdSerializer, UserSerializer, OrderSerializer, AchievementSerializer
+from .models import User, Bird, Order, BirdPhoto, Achievement, UserAchievement
 
 @require_POST
 def LoginView(request):
@@ -201,3 +203,15 @@ def user_info(request):
     user = request.user
     serializer = UserSerializer(user)
     return JsonResponse(serializer.data, safe=False)
+
+@api_view(['GET'])
+def achievement_view(request):
+    user = request.user
+    user_achievements = UserAchievement.objects.filter(user=user, achievement=OuterRef('pk'))
+    achievements = Achievement.objects.annotate(
+        isEarned=Exists(user_achievements)
+    )
+    serializer = AchievementSerializer(achievements, many=True)
+    return Response(serializer.data)
+
+

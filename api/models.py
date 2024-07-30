@@ -1,8 +1,35 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+
+# User models and models to track user achievements and statistics
+
 class User(AbstractUser):
     quizzes_taken = models.IntegerField(default=0)
+
+REQUIREMENT_STAT_CHOICES = [
+    ('quizzes_taken', 'Quizzes Taken'),
+    ('quizzes_correct', 'Quizzes Correct'),
+    ('birds_seen', 'Birds Seen'),
+]
+
+class Achievement(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.TextField()
+    image = models.FileField(upload_to='achievements/', blank=True, null=True) # SVG format
+    requirement_stat = models.CharField(max_length=50, choices=REQUIREMENT_STAT_CHOICES, default='quizzes_taken')
+    requirement_goal = models.IntegerField(default=0)
+
+    def __str__ (self):
+        return self.name
+
+class UserAchievement(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE)
+    earned_at = models.DateTimeField(auto_now_add=True)
+
+
+# Bird information models for quiz generation
 
 class Order(models.Model):
     scientific_name = models.CharField(max_length=50, unique=True)
@@ -39,6 +66,7 @@ class Bird(models.Model):
     
     def __str__(self):
         return self.common_name + " (" + self.scientific_name + ")"
+
 
 class BirdPhoto(models.Model):
     bird = models.ForeignKey(Bird, on_delete=models.CASCADE)

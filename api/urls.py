@@ -11,4 +11,5 @@ urlpatterns = [
     path('user-info/', views.user_info, name='user-info'),
     path('get-questions/', views.get_questions, name='get-questions'),
     path('submit-quiz/', views.submit_quiz, name='submit-quiz'),
+    path('achievements/', views.achievement_view, name='achievements'),
 ]

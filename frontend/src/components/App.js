@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import HomePage from "./HomePage";
 import QuizPage from "./QuizPage";
+import AchievementsPage from "./AchievementsPage";
 import ProfilePage from "./ProfilePage";
 import LoginPage from "./auth/LoginPage";
 import RegisterPage from "./auth/RegisterPage";
@@ -150,6 +151,7 @@ class App extends React.Component {
         >
           <Tab label="Home" />
           <Tab label="Learn" />
+          <Tab label="Achievements" />
           <Tab label="Profile" />
         </Tabs>
         <div align="center">
@@ -165,6 +167,11 @@ class App extends React.Component {
             </>
           )}
           {selectedTab === 2 && (
+            <>
+              <AchievementsPage />
+            </>
+          )}
+          {selectedTab === 3 && (
             <ProfilePage logout={this.logout} />
           )}
         </div>
